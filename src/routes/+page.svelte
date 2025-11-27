@@ -5,10 +5,11 @@
   import Countdown from '$lib/components/Countdown.svelte';
   import LocationCard from '$lib/components/LocationCard.svelte';
   import Button from '$lib/components/Button.svelte';
+  import CustomSnowflake from '$lib/components/CustomSnowflake.svelte';
   import { EVENT_INFO } from '$lib/constants';
   import { userStore } from '$lib/stores/user';
   import { formatDate } from '$lib/utils/countdown';
-  import { Calendar, Gift, Music, Flame, Gamepad2, CheckCircle, XCircle, Bell, Star, Snowflake, TreePine, Sparkles } from 'lucide-svelte';
+  import { Calendar, Gift, Music, Flame, Gamepad2, CheckCircle, XCircle, Bell, Star, TreePine, Sparkles } from 'lucide-svelte';
   import type { StoredRSVPData } from '$lib/constants';
 
   let userData = $derived($userStore);
@@ -94,9 +95,9 @@
       <!-- Decorative icons -->
       <div class="flex justify-center items-center gap-4 my-6 text-gold">
         <Sparkles class="w-5 h-5 animate-pulse text-white/70" />
-        <Snowflake class="w-6 h-6 animate-spin text-white/50" style="animation-duration: 10s;" />
+        <CustomSnowflake class="w-6 h-6 animate-spin text-white/50" style="animation-duration: 10s;" />
         <Bell class="w-8 h-8 text-gold animate-bounce" style="animation-duration: 3s;" />
-        <Snowflake class="w-6 h-6 animate-spin text-white/50" style="animation-duration: 8s;" />
+        <CustomSnowflake class="w-6 h-6 animate-spin text-white/50" style="animation-duration: 8s;" />
         <Sparkles class="w-5 h-5 animate-pulse text-white/70" />
       </div>
     </div>
