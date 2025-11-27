@@ -91,6 +91,11 @@ if (browser) {
   load();
 }
 
+// Session state for auto-redirect
+export const sessionState = {
+  hasAutoRedirected: false
+};
+
 export const userStore = {
   subscribe: rsvpDataStore.subscribe,
   isLoaded: isLoadedStore,

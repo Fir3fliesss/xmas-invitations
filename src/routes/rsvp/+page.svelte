@@ -8,7 +8,7 @@
   import Toast from '$lib/components/Toast.svelte';
   import ChristmasLights from '$lib/components/ChristmasLights.svelte';
   import { SCHOOLS, getClassesBySchool, EVENT_INFO, type SchoolValue, type StoredRSVPData } from '$lib/constants';
-  import { userStore } from '$lib/stores/user';
+  import { userStore, sessionState } from '$lib/stores/user';
   import { isRSVPDeadlinePassed } from '$lib/utils/countdown';
   import { supabase } from '$lib/supabase';
   import { ChevronLeft, User, School, BookOpen, CheckCircle2, XCircle } from 'lucide-svelte';
@@ -162,6 +162,7 @@
 
       console.log('Saving RSVP data to store:', rsvpData);
       userStore.save(rsvpData);
+      sessionState.hasAutoRedirected = true;
 
       // Small delay to ensure store is updated before redirect
       await new Promise(resolve => setTimeout(resolve, 100));

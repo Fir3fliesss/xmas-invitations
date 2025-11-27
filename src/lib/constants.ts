@@ -80,18 +80,27 @@ export type SchoolValue = typeof SCHOOLS[number]['value'];
 // TODO: Confirm jurusan yang ada di Penus
 export const SMK_CLASSES = [
   // RPL (Rekayasa Perangkat Lunak)
-  'X.RPL-1', 'X.RPL-2',
+  'X.RPL-1', 'X.RPL-2', 
   'XI.RPL-1', 'XI.RPL-2',
-  'XII.RPL-1', 'XII.RPL-2',
+  'XII.RPL-1', 'XII.RPL-2', 'XII.RPL-3',
   
   // TKJ (Teknik Komputer dan Jaringan)
   'X.TKJ-1', 'X.TKJ-2',
   'XI.TKJ-1', 'XI.TKJ-2',
-  'XII.TKJ-1', 'XII.TKJ-2',
+  'XII.TKJ-1', 'XII.TKJ-2', 'XII.TKJ-3',
   
-  // Tambahkan jurusan lain sesuai kebutuhan
-  // 'X.AKL-1', 'X.AKL-2', // Akuntansi
-  // 'X.OTKP-1', 'X.OTKP-2', // Otomatisasi dan Tata Kelola Perkantoran
+  // DKV & MM (Desain Komunikasi Visual) & (Multimedia)
+  'X.DKV-1', 'X.DKV-2', 'X.DKV-3', 'X.DKV-4',
+  'XI.DKV-1', 'XI.DKV-2', 'XI.DKV-3', 'XI.DKV-4',
+  'XII.MM-1', 'XII.MM-2', 'XII.MM-3', 'XII.MM-4',
+  
+  // LPB & PKM (Layanan Perbankan) & (Perbankan Keuangan Mikro)
+  'X.LPB-1', 'X.LPB-2',
+  'XI.LPB-1', 'XI.LPB-2',
+  'XII.PKM-1', 'XII.PKM-2',
+  
+  // TOI (Teknik Otomasi Industri)
+  'X.TOI-1',
   
   'Lainnya'
 ] as const;

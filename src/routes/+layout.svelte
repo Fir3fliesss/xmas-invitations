@@ -1,6 +1,7 @@
 <script lang="ts">
   import '../app.css';
   import Snowfall from '$lib/components/Snowfall.svelte';
+  import MusicPlayer from '$lib/components/MusicPlayer.svelte';
   import { userStore } from '$lib/stores/user';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
@@ -69,4 +70,7 @@
     <p>Made with ❤️ by Rohkris Penus</p>
     <p class="mt-1">🎄 Merry Christmas 2025 🎄</p>
   </footer>
+
+  <!-- Background Music -->
+  <MusicPlayer />
 </div>

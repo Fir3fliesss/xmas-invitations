@@ -10,7 +10,7 @@
   import CustomSnowflake from '$lib/components/CustomSnowflake.svelte';
   import ParallaxBackground from '$lib/components/ParallaxBackground.svelte';
   import { EVENT_INFO } from '$lib/constants';
-  import { userStore } from '$lib/stores/user';
+  import { userStore, sessionState } from '$lib/stores/user';
   import { formatDate } from '$lib/utils/countdown';
   import { Calendar, Gift, Music, Flame, Gamepad2, CheckCircle, XCircle, Bell, Star, TreePine, Sparkles } from 'lucide-svelte';
   import type { StoredRSVPData } from '$lib/constants';
@@ -28,8 +28,9 @@
       const data = userStore.getData();
       console.log('[Home] User data:', data);
 
-      if (data) {
+      if (data && !sessionState.hasAutoRedirected) {
         console.log('[Home] User already submitted, redirecting...');
+        sessionState.hasAutoRedirected = true;
         if (data.isAttending) {
           goto('/thank-you', { replaceState: true });
         } else {
