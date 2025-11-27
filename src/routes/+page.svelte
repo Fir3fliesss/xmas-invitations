@@ -133,7 +133,7 @@
       <div class="card-glass p-6 space-y-4">
         <!-- Date & Time -->
         <div class="flex items-center gap-4">
-          <div class="flex-shrink-0 w-12 h-12 bg-gold/20 rounded-lg flex items-center justify-center">
+          <div class="shrink-0 w-12 h-12 bg-gold/20 rounded-lg flex items-center justify-center">
             <Calendar class="w-6 h-6 text-gold" />
           </div>
           <div>
