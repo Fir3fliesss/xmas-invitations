@@ -221,20 +221,6 @@
 </svelte:head>
 
 <div class="max-w-6xl mx-auto px-4 py-6">
-  <!-- Debug Section (remove in production) -->
-  {#import.meta.env.DEV}
-    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-      <p class="text-sm text-yellow-800 font-medium mb-2">Debug Info:</p>
-      <div class="text-xs space-y-1">
-        <p>Loading: {isLoading ? 'Yes' : 'No'}</p>
-        <p>Error: {error || 'None'}</p>
-        <p>Data count: {attendees.length}</p>
-        <p>Filtered count: {filteredAttendees().length}</p>
-        <p>Browser: {browser ? 'Yes' : 'No'}</p>
-      </div>
-    </div>
-  {/import}
-
   <!-- Stats Cards -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
     <div class="bg-white rounded-xl shadow p-5">
