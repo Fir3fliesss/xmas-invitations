@@ -6,6 +6,7 @@
   import LocationCard from '$lib/components/LocationCard.svelte';
   import Button from '$lib/components/Button.svelte';
   import CustomSnowflake from '$lib/components/CustomSnowflake.svelte';
+  import ParallaxBackground from '$lib/components/ParallaxBackground.svelte';
   import { EVENT_INFO } from '$lib/constants';
   import { userStore } from '$lib/stores/user';
   import { formatDate } from '$lib/utils/countdown';
@@ -58,7 +59,9 @@
   <meta name="description" content="Undangan Natal - {EVENT_INFO.title}. {formatDate(EVENT_INFO.date)} di {EVENT_INFO.location.name}" />
 </svelte:head>
 
-<div class="min-h-screen">
+<ParallaxBackground />
+
+<div class="min-h-screen relative z-10">
   <!-- Hero Section -->
   <section class="relative py-8 px-4 overflow-hidden">
     <!-- Background Decorations -->
