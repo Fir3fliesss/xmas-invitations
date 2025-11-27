@@ -439,10 +439,14 @@ body {
 
 .admin-table th {
   background: var(--color-christmas-red);
-  color: white;
+  color: #fffbeb; /* amber-50 - warm light color, high contrast on red background */
   font-weight: 600;
   position: sticky;
   top: 0;
+}
+
+.admin-table td {
+  color: #374151; /* gray-700 */
 }
 
 .admin-table tr:hover {

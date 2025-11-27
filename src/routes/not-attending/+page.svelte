@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { onMount, onDestroy } from 'svelte';
@@ -5,62 +7,48 @@
   import Countdown from '$lib/components/Countdown.svelte';
   import LocationCard from '$lib/components/LocationCard.svelte';
   import ChristmasLights from '$lib/components/ChristmasLights.svelte';
+  import CustomLoader from '$lib/components/CustomLoader.svelte';
   import Toast from '$lib/components/Toast.svelte';
   import { EVENT_INFO, type StoredRSVPData } from '$lib/constants';
   import { userStore } from '$lib/stores/user';
   import { supabase } from '$lib/supabase';
   import { formatDate } from '$lib/utils/countdown';
   import { XCircle, Heart, Calendar, ArrowRight, MessageCircle } from 'lucide-svelte';
-  
+  import { browser } from '$app/environment';
 
   let isUpdating = $state(false);
   let showToast = $state(false);
   let toastMessage = $state('');
   let toastType = $state<'success' | 'error'>('success');
-  
+
   let userData = $state<StoredRSVPData | null>(null);
   let isLoading = $state(true);
+  let mounted = $state(false);
 
-  onMount(() => {
-    console.log('Not-attending page mounted');
+  // Use $effect instead of onMount for Svelte 5 runes mode
+  $effect(() => {
+    if (!mounted && browser) {
+      mounted = true;
+      console.log('[Not-attending] Mounted, checking user data...');
 
-    // Manual subscription
-    const unsubscribe = userStore.subscribe(value => {
-      userData = value;
-      if (value) {
+      // Get initial data
+      const initialData = userStore.getData();
+      console.log('[Not-attending] Initial data:', initialData);
+
+      if (initialData) {
+        userData = initialData;
         isLoading = false;
-        
-        if (value.isAttending) {
+
+        // Verify attendance status
+        if (initialData.isAttending) {
+          console.log('[Not-attending] User is attending, redirecting...');
           goto('/thank-you', { replaceState: true });
         }
-      }
-    });
-
-    // Check isLoaded status
-    const unsubscribeLoaded = userStore.isLoaded.subscribe(loaded => {
-      if (loaded) {
-        setTimeout(() => {
-           if (!userData) {
-             goto('/', { replaceState: true });
-           } else {
-             isLoading = false;
-           }
-        }, 100);
-      }
-    });
-
-    // Safety timeout
-    const safetyTimeout = setTimeout(() => {
-      if (isLoading && !userData) {
+      } else {
+        console.log('[Not-attending] No data found, redirecting to home...');
         goto('/', { replaceState: true });
       }
-    }, 2000);
-
-    return () => {
-      unsubscribe();
-      unsubscribeLoaded();
-      clearTimeout(safetyTimeout);
-    };
+    }
   });
 
   async function changeToAttending() {
@@ -212,10 +200,7 @@
   {:else}
     <!-- Loading/Redirecting state -->
     <div class="min-h-[50vh] flex items-center justify-center">
-      <div class="text-center">
-        <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-white/20 border-t-gold"></div>
-        <p class="mt-4 text-white/70">Memuat...</p>
-      </div>
+      <CustomLoader message="Mohon tunggu sebentar..." />
     </div>
   {/if}
 </div>

@@ -1,6 +1,8 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
   import ChristmasLights from '$lib/components/ChristmasLights.svelte';
   import Countdown from '$lib/components/Countdown.svelte';
   import LocationCard from '$lib/components/LocationCard.svelte';
@@ -14,26 +16,27 @@
   import type { StoredRSVPData } from '$lib/constants';
 
   let userData = $derived($userStore);
+  let mounted = $state(false);
 
-  onMount(() => {
-    console.log('Home page mounted');
-    
-    // Check redirect after store is loaded
-    const unsubscribe = userStore.isLoaded.subscribe(loaded => {
-      if (loaded) {
-        const data = userStore.getData();
-        if (data) {
-          console.log('User already submitted, redirecting...');
-          if (data.isAttending) {
-            goto('/thank-you', { replaceState: true });
-          } else {
-            goto('/not-attending', { replaceState: true });
-          }
+  // Use $effect instead of onMount for Svelte 5 runes mode
+  $effect(() => {
+    if (!mounted && browser) {
+      mounted = true;
+      console.log('[Home] Mounted, checking user data...');
+
+      // Check if user already submitted
+      const data = userStore.getData();
+      console.log('[Home] User data:', data);
+
+      if (data) {
+        console.log('[Home] User already submitted, redirecting...');
+        if (data.isAttending) {
+          goto('/thank-you', { replaceState: true });
+        } else {
+          goto('/not-attending', { replaceState: true });
         }
       }
-    });
-
-    return unsubscribe;
+    }
   });
 
   // Check if user already submitted RSVP (for button click)

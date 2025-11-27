@@ -1,5 +1,8 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import { goto } from '$app/navigation';
+  import { browser } from '$app/environment';
   import { enhance } from '$app/forms';
   import Button from '$lib/components/Button.svelte';
   import Toast from '$lib/components/Toast.svelte';
@@ -9,7 +12,26 @@
   import { isRSVPDeadlinePassed } from '$lib/utils/countdown';
   import { supabase } from '$lib/supabase';
   import { ChevronLeft, User, School, BookOpen, CheckCircle2, XCircle } from 'lucide-svelte';
-  import { onMount } from 'svelte';
+
+  // Check if user already submitted
+  let mounted = $state(false);
+
+  $effect(() => {
+    if (!mounted && browser) {
+      mounted = true;
+      console.log('[RSVP] Checking if user already submitted...');
+
+      const existingData = userStore.getData();
+      if (existingData) {
+        console.log('[RSVP] User already submitted, redirecting...');
+        if (existingData.isAttending) {
+          goto('/thank-you', { replaceState: true });
+        } else {
+          goto('/not-attending', { replaceState: true });
+        }
+      }
+    }
+  });
 
   // Form state
   let name = $state('');

@@ -86,6 +86,11 @@ function getClassDisplay(data: StoredRSVPData | null): string {
   return data.class;
 }
 
+// Initialize store by loading from localStorage
+if (browser) {
+  load();
+}
+
 export const userStore = {
   subscribe: rsvpDataStore.subscribe,
   isLoaded: isLoadedStore,

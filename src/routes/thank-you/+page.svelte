@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { onMount, onDestroy } from 'svelte';
@@ -5,6 +7,7 @@
   import Countdown from '$lib/components/Countdown.svelte';
   import LocationCard from '$lib/components/LocationCard.svelte';
   import ChristmasLights from '$lib/components/ChristmasLights.svelte';
+  import CustomLoader from '$lib/components/CustomLoader.svelte';
   import { EVENT_INFO, type StoredRSVPData } from '$lib/constants';
   import { userStore } from '$lib/stores/user';
   import { formatDate } from '$lib/utils/countdown';
@@ -14,57 +17,32 @@
   let copied = $state(false);
   let userData = $state<StoredRSVPData | null>(null);
   let isLoading = $state(true);
+  let mounted = $state(false);
 
-  onMount(() => {
-    console.log('Thank-you page mounted');
-    
-    // Manual subscription to ensure we get the latest data
-    const unsubscribe = userStore.subscribe(value => {
-      userData = value;
-      console.log('Thank-you: Store updated', value);
-      
-      // If we have data, we are done loading
-      if (value) {
+  // Use $effect instead of onMount for Svelte 5 runes mode
+  $effect(() => {
+    if (!mounted && browser) {
+      mounted = true;
+      console.log('[Thank-you] Mounted, checking user data...');
+
+      // Get initial data
+      const initialData = userStore.getData();
+      console.log('[Thank-you] Initial data:', initialData);
+
+      if (initialData) {
+        userData = initialData;
         isLoading = false;
-        
+
         // Verify attendance status
-        if (!value.isAttending) {
-          console.log('User not attending, redirecting...');
+        if (!initialData.isAttending) {
+          console.log('[Thank-you] User not attending, redirecting...');
           goto('/not-attending', { replaceState: true });
         }
-      }
-    });
-
-    // Check isLoaded status from store
-    const unsubscribeLoaded = userStore.isLoaded.subscribe(loaded => {
-      console.log('Thank-you: Store isLoaded', loaded);
-      if (loaded) {
-        // If store is loaded but no data, redirect
-        // Give a small grace period for the data subscription to fire first
-        setTimeout(() => {
-           if (!userData) {
-             console.log('Thank-you: Store loaded but no data, redirecting home');
-             goto('/', { replaceState: true });
-           } else {
-             isLoading = false;
-           }
-        }, 100);
-      }
-    });
-
-    // Safety timeout: If nothing happens in 2 seconds, redirect home
-    const safetyTimeout = setTimeout(() => {
-      if (isLoading && !userData) {
-        console.warn('Thank-you: Safety timeout reached, redirecting home');
+      } else {
+        console.log('[Thank-you] No data found, redirecting to home...');
         goto('/', { replaceState: true });
       }
-    }, 2000);
-
-    return () => {
-      unsubscribe();
-      unsubscribeLoaded();
-      clearTimeout(safetyTimeout);
-    };
+    }
   });
 
   function shareWhatsApp() {
@@ -196,7 +174,7 @@ ${EVENT_INFO.location.mapsUrl}`;
           href={EVENT_INFO.contact.whatsapp}
           target="_blank"
           rel="noopener noreferrer"
-          class="flex items-center justify-center gap-2 text-white/90 hover:text-green-400 transition-colors"
+          class="flex items-center justify-center gap text-white/90 hover:text-green-400 transition-colors"
         >
           <MessageCircle class="w-4 h-4" />
           <span>{EVENT_INFO.contact.phone} ({EVENT_INFO.contact.name})</span>
@@ -229,10 +207,7 @@ ${EVENT_INFO.location.mapsUrl}`;
   {:else}
     <!-- Loading/Redirecting state -->
     <div class="min-h-[50vh] flex items-center justify-center">
-      <div class="text-center">
-        <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-white/20 border-t-gold"></div>
-        <p class="mt-4 text-white/70">Memuat...</p>
-      </div>
+      <CustomLoader message="Mohon tunggu sebentar..." />
     </div>
   {/if}
 </div>

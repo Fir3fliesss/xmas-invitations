@@ -9,7 +9,6 @@
   import { exportToExcel } from '$lib/utils/export-excel';
   import Button from '$lib/components/Button.svelte';
   import Toast from '$lib/components/Toast.svelte';
-  import CustomLoader from '$lib/components/CustomLoader.svelte';
   import {
     Users, UserCheck, UserX, Download, Search,
     Filter, RefreshCw, ChevronDown, ChevronLeft, ChevronRight, Eye, Trash2
@@ -45,23 +44,14 @@
   });
 
   // Debounce search query
-  let debounceTimer: ReturnType<typeof setTimeout> | undefined;
-
-  function handleSearchInput(e: Event) {
-    const target = e.target as HTMLInputElement;
-    searchQuery = target.value;
-
-    // Clear previous timer
-    if (debounceTimer) {
-      clearTimeout(debounceTimer);
-    }
-
-    // Set new timer
-    debounceTimer = setTimeout(() => {
+  $effect(() => {
+    const timer = setTimeout(() => {
       debouncedSearchQuery = searchQuery;
-      currentPage = 1;
-    }, 500);
-  }
+      currentPage = 1; // Reset to first page on search
+    }, 300);
+
+    return () => clearTimeout(timer);
+  });
 
   // Filtered data
   let filteredAttendees = $derived.by(() => {
@@ -285,8 +275,7 @@
         <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-800" />
         <input
           type="text"
-          value={searchQuery}
-          oninput={handleSearchInput}
+          bind:value={searchQuery}
           placeholder="Cari nama, sekolah, atau kelas..."
           class="text-gray-800 w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:border-christmas-red"
         />
@@ -339,10 +328,10 @@
         <button
           onclick={fetchData}
           disabled={isLoading}
-          class="flex items-center gap-2 px-4 py-2.5 bg-gray-300 hover:bg-gray-400 rounded-lg transition-colors disabled:opacity-50"
+          class="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors disabled:opacity-50"
         >
           <RefreshCw class="w-4 h-4 {isLoading ? 'animate-spin' : ''}" />
-          <span class="hidden sm:inline text-gray-800">Refresh</span>
+          <span class="hidden sm:inline">Refresh</span>
         </button>
         <button
           onclick={handleExport}
@@ -359,7 +348,8 @@
   <div class="bg-white rounded-xl shadow overflow-hidden">
     {#if isLoading}
       <div class="p-12 text-center">
-        <CustomLoader message="Memuat data..." />
+        <RefreshCw class="w-8 h-8 animate-spin text-christmas-red mx-auto mb-4" />
+        <p class="text-gray-500">Memuat data...</p>
       </div>
     {:else if error}
       <div class="p-12 text-center">
@@ -500,7 +490,7 @@
               {#if page === 1 || page === totalPages || (page >= currentPage - 1 && page <= currentPage + 1)}
                 <button
                   onclick={() => currentPage = page}
-                  class="px-3 py-1.5 rounded-lg border transition-colors {currentPage === page ? 'bg-christmas-red text-white border-christmas-red' : 'border-gray-300 text-gray-500 hover:bg-gray-50'}"
+                  class="px-3 py-1.5 rounded-lg border transition-colors {currentPage === page ? 'bg-christmas-red text-white border-christmas-red' : 'border-gray-300 hover:bg-gray-50'}"
                 >
                   {page}
                 </button>
@@ -513,7 +503,7 @@
           <button
             onclick={() => currentPage = currentPage + 1}
             disabled={currentPage === totalPages}
-            class="p-2 rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            class="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <ChevronRight class="w-4 h-4" />
           </button>

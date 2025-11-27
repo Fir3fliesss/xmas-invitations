@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { browser } from '$app/environment';
@@ -13,7 +15,7 @@
 
   async function handleLogin(e: Event) {
     e.preventDefault();
-    
+
     if (!username || !password) {
       error = 'Username dan password harus diisi';
       return;
@@ -28,17 +30,19 @@
         .from('admin_users')
         .select('*')
         .eq('username', username)
-        .single();
+        .maybeSingle();   // use maybeSingle to avoid 406 when no rows
 
       console.log('Login attempt:', { username, foundUser: !!adminUser, fetchError });
 
+      // Handle Supabase error (e.g., RLS policy)
       if (fetchError) {
         console.error('Login fetch error:', fetchError);
-        error = 'Terjadi kesalahan saat login';
+        error = 'Tidak dapat mengakses data login (periksa kebijakan RLS)';
         isLoading = false;
         return;
       }
 
+      // No user found with that username
       if (!adminUser) {
         error = 'Username atau password salah';
         isLoading = false;
@@ -54,7 +58,7 @@
 
       // Create simple token (in production, use proper JWT)
       const token = btoa(`${username}:${Date.now()}`);
-      
+
       if (browser) {
         localStorage.setItem(STORAGE_KEYS.ADMIN_TOKEN, token);
         goto('/admin');

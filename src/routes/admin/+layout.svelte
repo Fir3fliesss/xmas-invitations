@@ -1,8 +1,11 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
   import { STORAGE_KEYS } from '$lib/constants';
+  import CustomLoader from '$lib/components/CustomLoader.svelte';
   import { LogOut, TreePine, Loader2 } from 'lucide-svelte';
   import { page } from '$app/stores';
 
@@ -14,7 +17,7 @@
     checkAuth();
   });
 
-  // Re-check auth when page changes, just in case
+  // Re-check auth when page changes
   $effect(() => {
     if (browser && $page.url.pathname) {
       checkAuth();
@@ -23,18 +26,18 @@
 
   function checkAuth() {
     if (!browser) return;
-    
+
     const token = localStorage.getItem(STORAGE_KEYS.ADMIN_TOKEN);
     isAuthenticated = !!token;
-    
+
     // Don't redirect if we are already on the login page
     const isLoginPage = $page.url.pathname.includes('/admin/login');
-    
+
     if (!token && !isLoginPage) {
       goto('/admin/login');
     }
-    
-    // Small delay to prevent flash if it was just a quick check
+
+    // Small delay to prevent flash
     setTimeout(() => {
       isChecking = false;
     }, 100);
@@ -52,8 +55,7 @@
 <div class="min-h-screen bg-gray-100 font-sans">
   {#if isChecking}
     <div class="min-h-screen flex flex-col items-center justify-center">
-      <Loader2 class="w-10 h-10 text-christmas-red animate-spin mb-4" />
-      <p class="text-gray-500">Memuat...</p>
+      <CustomLoader message="Memeriksa autentikasi..." />
     </div>
   {:else if isAuthenticated || $page.url.pathname.includes('/admin/login')}
     <!-- Admin Header -->
