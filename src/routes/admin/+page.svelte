@@ -94,15 +94,28 @@
     error = '';
 
     try {
+      console.log('Admin: Starting fetch data...');
+      
       const { data, error: fetchError } = await supabase
         .from('attendees')
         .select('*')
         .order('created_at', { ascending: false });
 
+      console.log('Admin: Supabase response', { 
+        hasData: !!data, 
+        dataLength: data?.length, 
+        error: fetchError 
+      });
+
+      if (data) {
+        console.table(data.slice(0, 3)); // Show first 3 rows
+      }
+
       if (fetchError) throw fetchError;
       attendees = data || [];
+      
     } catch (err) {
-      console.error('Error fetching attendees:', err);
+      console.error('Admin: detailed error', err);
       error = 'Gagal memuat data. Silakan refresh halaman.';
     } finally {
       isLoading = false;
