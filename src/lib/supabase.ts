@@ -1,8 +1,17 @@
 import { createClient } from '@supabase/supabase-js';
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
 
+// Fallback values to prevent 500 error on server-side render if env vars are missing
+// This allows the page to load, though API calls will fail if vars are not set
+const supabaseUrl = PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseKey = PUBLIC_SUPABASE_ANON_KEY || 'placeholder';
+
+if (!PUBLIC_SUPABASE_URL || !PUBLIC_SUPABASE_ANON_KEY) {
+  console.warn('Supabase environment variables are missing. Please check your Vercel project settings.');
+}
+
 // Browser client (for client-side operations)
-export const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY);
+export const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Types for database
 export interface Database {
