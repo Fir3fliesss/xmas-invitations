@@ -77,9 +77,12 @@
   });
 
   onMount(async () => {
+    console.log('Admin: Component mounting...');
+    
     // Check auth
     if (browser) {
       const token = localStorage.getItem(STORAGE_KEYS.ADMIN_TOKEN);
+      console.log('Admin: Token check:', { hasToken: !!token });
       if (!token) {
         console.warn('Admin: No token found, redirecting to login');
         goto('/admin/login');
@@ -99,28 +102,47 @@
 
     try {
       console.log('Admin: Starting fetch data...');
+      console.log('Admin: Supabase URL:', import.meta.env.PUBLIC_SUPABASE_URL);
       
-      const { data, error: fetchError } = await supabase
+      const { data, error: fetchError, count } = await supabase
         .from('attendees')
-        .select('*')
+        .select('*', { count: 'exact' })
         .order('created_at', { ascending: false });
 
       console.log('Admin: Supabase response', { 
         hasData: !!data, 
         dataLength: data?.length, 
-        error: fetchError 
+        count,
+        error: fetchError,
+        fullError: fetchError?.message,
+        errorDetails: fetchError?.details
       });
 
       if (data) {
-        console.table(data.slice(0, 3)); // Show first 3 rows
+        console.log('Admin: Sample data:', data.slice(0, 3));
+        console.table(data.slice(0, 5)); // Show first 5 rows
+      } else {
+        console.warn('Admin: No data returned:', fetchError);
       }
 
       if (fetchError) throw fetchError;
+      
+      if (!data || data.length === 0) {
+        console.warn('Admin: Empty data set received');
+        // Show warning instead of error
+        toastMessage = 'Tidak ada data RSVP yang ditemukan di database';
+        toastType = 'info';
+        showToast = true;
+      }
+      
       attendees = data || [];
       
     } catch (err) {
       console.error('Admin: detailed error', err);
-      error = 'Gagal memuat data. Silakan refresh halaman.';
+      error = `Gagal memuat data: ${err instanceof Error ? err.message : 'Unknown error'}. Silakan refresh halaman.`;
+      toastMessage = error;
+      toastType = 'error';
+      showToast = true;
     } finally {
       isLoading = false;
     }
@@ -199,6 +221,20 @@
 </svelte:head>
 
 <div class="max-w-6xl mx-auto px-4 py-6">
+  <!-- Debug Section (remove in production) -->
+  {#import.meta.env.DEV}
+    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+      <p class="text-sm text-yellow-800 font-medium mb-2">Debug Info:</p>
+      <div class="text-xs space-y-1">
+        <p>Loading: {isLoading ? 'Yes' : 'No'}</p>
+        <p>Error: {error || 'None'}</p>
+        <p>Data count: {attendees.length}</p>
+        <p>Filtered count: {filteredAttendees().length}</p>
+        <p>Browser: {browser ? 'Yes' : 'No'}</p>
+      </div>
+    </div>
+  {/import}
+
   <!-- Stats Cards -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
     <div class="bg-white rounded-xl shadow p-5">
