@@ -101,27 +101,27 @@
     error = '';
 
     try {
-      console.log('Admin: Starting fetch data...');
+      console.log('=== Admin: Starting fetch data ===');
+      console.log('Admin: Supabase instance check:', !!supabase);
+      console.log('Admin: Supabase URL:', supabase.supabaseUrl);
       
       const { data, error: fetchError, count } = await supabase
         .from('attendees')
         .select('*', { count: 'exact' })
         .order('created_at', { ascending: false });
 
-      console.log('Admin: Supabase response', { 
-        hasData: !!data, 
-        dataLength: data?.length, 
-        count,
-        error: fetchError,
-        fullError: fetchError?.message,
-        errorDetails: fetchError?.details
-      });
+      console.log('=== Admin: Supabase Response ===');
+      console.log('Admin: Has Data:', !!data);
+      console.log('Admin: Data Length:', data?.length || 0);
+      console.log('Admin: Count from query:', count);
+      console.log('Admin: Fetch Error:', fetchError);
+      console.log('Admin: Full Error Details:', fetchError?.message, fetchError?.details);
+      console.log('Admin: Sample Data (first 3):', data?.slice(0, 3));
 
-      if (data) {
-        console.log('Admin: Sample data:', data.slice(0, 3));
+      if (data && data.length > 0) {
         console.table(data.slice(0, 5)); // Show first 5 rows
       } else {
-        console.warn('Admin: No data returned:', fetchError);
+        console.warn('Admin: No data returned or empty array');
       }
 
       if (fetchError) throw fetchError;
@@ -129,7 +129,7 @@
       if (!data || data.length === 0) {
         console.warn('Admin: Empty data set received');
         // Show warning instead of error
-        toastMessage = 'Tidak ada data RSVP yang ditemukan di database';
+        toastMessage = 'Tidak ada data RSVP yang ditemukan di database. Table mungkin kosong atau RLS memblokir akses.';
         toastType = 'info';
         showToast = true;
       }
@@ -137,12 +137,17 @@
       attendees = data || [];
       
     } catch (err) {
-      console.error('Admin: detailed error', err);
+      console.error('=== Admin: Detailed Error ===');
+      console.error('Admin: Error type:', err instanceof Error ? err.constructor.name : typeof err);
+      console.error('Admin: Error message:', err instanceof Error ? err.message : String(err));
+      console.error('Admin: Full error object:', err);
+      
       error = `Gagal memuat data: ${err instanceof Error ? err.message : 'Unknown error'}. Silakan refresh halaman.`;
       toastMessage = error;
       toastType = 'error';
       showToast = true;
     } finally {
+      console.log('=== Admin: Fetch Complete ===');
       isLoading = false;
     }
   }
