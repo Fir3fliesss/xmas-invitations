@@ -94,17 +94,13 @@
     error = '';
 
     try {
-      console.log('Fetching data from Supabase...');
       const { data, error: fetchError } = await supabase
         .from('attendees')
         .select('*')
         .order('created_at', { ascending: false });
 
-      console.log('Supabase response:', { data, fetchError });
-
       if (fetchError) throw fetchError;
       attendees = data || [];
-      console.log('Attendees loaded:', attendees.length);
     } catch (err) {
       console.error('Error fetching attendees:', err);
       error = 'Gagal memuat data. Silakan refresh halaman.';
