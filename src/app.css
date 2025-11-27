@@ -1,0 +1,470 @@
+@import 'tailwindcss';
+
+/* ========================================
+   CHRISTMAS THEME - Custom CSS Variables
+   ======================================== */
+
+@theme {
+  /* Colors */
+  --color-christmas-red: #8B1538;
+  --color-christmas-red-dark: #5C0F26;
+  --color-christmas-red-light: #A91D47;
+  --color-christmas-gold: #D4AF37;
+  --color-christmas-gold-light: #F5DEB3;
+  --color-christmas-green: #228B22;
+  --color-christmas-green-dark: #1A6B1A;
+  --color-snow: #F0F8FF;
+  --color-cream: #FFF8DC;
+  
+  /* Fonts */
+  --font-display: 'Playfair Display', serif;
+  --font-script: 'Great Vibes', cursive;
+  --font-sans: 'Inter', sans-serif;
+  
+  /* Shadows */
+  --shadow-christmas: 0 4px 20px rgba(139, 21, 56, 0.3);
+  --shadow-gold: 0 4px 20px rgba(212, 175, 55, 0.3);
+}
+
+/* ========================================
+   BASE STYLES
+   ======================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: linear-gradient(180deg, var(--color-christmas-red-dark) 0%, var(--color-christmas-red) 50%, var(--color-christmas-red-dark) 100%);
+  min-height: 100vh;
+  color: white;
+  overflow-x: hidden;
+}
+
+/* ========================================
+   TYPOGRAPHY
+   ======================================== */
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-script {
+  font-family: var(--font-script);
+}
+
+.text-gold {
+  color: var(--color-christmas-gold);
+}
+
+.text-gold-light {
+  color: var(--color-christmas-gold-light);
+}
+
+/* Gold gradient text */
+.text-gradient-gold {
+  background: linear-gradient(135deg, var(--color-christmas-gold-light) 0%, var(--color-christmas-gold) 50%, var(--color-christmas-gold-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ========================================
+   SNOWFALL ANIMATION
+   ======================================== */
+
+.snowflake {
+  position: fixed;
+  top: -10px;
+  color: white;
+  font-size: 1rem;
+  pointer-events: none;
+  opacity: 0.8;
+  z-index: 1000;
+  animation: snowfall linear infinite;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes snowfall {
+  0% {
+    transform: translateY(-10px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0.3;
+  }
+}
+
+/* ========================================
+   CHRISTMAS LIGHTS ANIMATION
+   ======================================== */
+
+.christmas-lights {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  padding: 1rem 0;
+}
+
+.light-bulb {
+  width: 12px;
+  height: 18px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+.light-bulb:nth-child(1) { background: #ff6b6b; animation-delay: 0s; }
+.light-bulb:nth-child(2) { background: #4ecdc4; animation-delay: 0.2s; }
+.light-bulb:nth-child(3) { background: #ffe66d; animation-delay: 0.4s; }
+.light-bulb:nth-child(4) { background: #95e1d3; animation-delay: 0.6s; }
+.light-bulb:nth-child(5) { background: #ff6b6b; animation-delay: 0.8s; }
+.light-bulb:nth-child(6) { background: #4ecdc4; animation-delay: 1s; }
+.light-bulb:nth-child(7) { background: #ffe66d; animation-delay: 1.2s; }
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
+    opacity: 0.6;
+  }
+  100% {
+    box-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
+    opacity: 1;
+  }
+}
+
+/* Wire for lights */
+.lights-wire {
+  position: relative;
+}
+
+.lights-wire::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #333;
+  border-radius: 2px;
+}
+
+/* ========================================
+   ORNAMENT DECORATIONS
+   ======================================== */
+
+.ornament {
+  position: absolute;
+  animation: swing 3s ease-in-out infinite;
+  transform-origin: top center;
+}
+
+@keyframes swing {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+
+/* ========================================
+   BUTTONS
+   ======================================== */
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-christmas-gold) 0%, var(--color-christmas-gold-light) 100%);
+  color: var(--color-christmas-red-dark);
+  font-weight: 600;
+  padding: 0.875rem 2rem;
+  border-radius: 9999px;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-gold);
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(212, 175, 55, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-christmas-gold);
+  font-weight: 600;
+  padding: 0.875rem 2rem;
+  border-radius: 9999px;
+  transition: all 0.3s ease;
+  border: 2px solid var(--color-christmas-gold);
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: var(--color-christmas-gold);
+  color: var(--color-christmas-red-dark);
+}
+
+/* ========================================
+   CARDS
+   ======================================== */
+
+.card-glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+}
+
+.card-solid {
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--color-christmas-red-dark);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-christmas);
+}
+
+/* ========================================
+   FORM STYLES
+   ======================================== */
+
+.form-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid rgba(139, 21, 56, 0.2);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+  color: #333;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-christmas-red);
+  box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.1);
+}
+
+.form-input::placeholder {
+  color: #999;
+}
+
+.form-label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--color-christmas-red-dark);
+}
+
+.form-select {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid rgba(139, 21, 56, 0.2);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+  color: #333;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238B1538' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1.25rem;
+  padding-right: 2.5rem;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: var(--color-christmas-red);
+  box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.1);
+}
+
+/* Radio buttons */
+.radio-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 2px solid rgba(139, 21, 56, 0.2);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.radio-card:hover {
+  border-color: var(--color-christmas-red);
+  background: rgba(139, 21, 56, 0.05);
+}
+
+.radio-card.selected {
+  border-color: var(--color-christmas-red);
+  background: rgba(139, 21, 56, 0.1);
+}
+
+.radio-card input[type="radio"] {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: var(--color-christmas-red);
+}
+
+/* Textarea */
+.form-textarea {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid rgba(139, 21, 56, 0.2);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+  color: #333;
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--color-christmas-red);
+  box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.1);
+}
+
+/* ========================================
+   COUNTDOWN STYLES
+   ======================================== */
+
+.countdown-container {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.countdown-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 1rem 1.5rem;
+  border-radius: 0.75rem;
+  min-width: 80px;
+}
+
+.countdown-value {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-christmas-gold);
+  line-height: 1;
+}
+
+.countdown-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 0.25rem;
+}
+
+/* ========================================
+   UTILITIES
+   ======================================== */
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.section-padding {
+  padding: 4rem 0;
+}
+
+/* Shimmer effect for loading */
+.shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 640px) {
+  .countdown-value {
+    font-size: 1.75rem;
+  }
+  
+  .countdown-item {
+    padding: 0.75rem 1rem;
+    min-width: 65px;
+  }
+  
+  .btn-primary, .btn-secondary {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* ========================================
+   ADMIN STYLES
+   ======================================== */
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.admin-table th {
+  background: var(--color-christmas-red);
+  color: white;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+}
+
+.admin-table tr:hover {
+  background: rgba(139, 21, 56, 0.05);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.badge-danger {
+  background: #f8d7da;
+  color: #721c24;
+}
