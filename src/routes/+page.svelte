@@ -67,7 +67,7 @@
 
     <!-- Main Title -->
     <div class="text-center max-w-2xl mx-auto">
-      <h1 class="font-script text-5xl md:text-7xl text-gradient-gold mb-2">
+      <h1 class="font-script text-5xl md:text-7xl text-gradient-gold mb-2 py-2 leading-relaxed">
         Celebrate
       </h1>
       <h2 class="font-display text-4xl md:text-6xl font-bold text-white tracking-wider mb-4">
