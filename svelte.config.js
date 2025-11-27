@@ -6,6 +6,9 @@ const config = {
   preprocess: vitePreprocess(),
   kit: {
     adapter: adapter()
+  },
+  server: {
+    allowhost: ['localhost', '127.0.0.1']
   }
 };
 

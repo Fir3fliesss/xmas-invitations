@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import Button from '$lib/components/Button.svelte';
   import Countdown from '$lib/components/Countdown.svelte';
   import LocationCard from '$lib/components/LocationCard.svelte';
@@ -17,22 +17,50 @@
   let showToast = $state(false);
   let toastMessage = $state('');
   let toastType = $state<'success' | 'error'>('success');
-  // Get user data immediately on initialization
-  let userData = $state<StoredRSVPData | null>(userStore.getData());
+  
+  let userData = $state<StoredRSVPData | null>(null);
+  let isLoading = $state(true);
 
   onMount(() => {
-    console.log('Not-attending page - user data:', userData);
+    console.log('Not-attending page mounted');
 
-    // Redirect if no RSVP data or is attending
-    if (!userData) {
-      console.log('No user data, redirecting to /rsvp');
-      goto('/rsvp');
-      return;
-    }
-    if (userData.isAttending) {
-      console.log('User attending, redirecting to /thank-you');
-      goto('/thank-you');
-    }
+    // Manual subscription
+    const unsubscribe = userStore.subscribe(value => {
+      userData = value;
+      if (value) {
+        isLoading = false;
+        
+        if (value.isAttending) {
+          goto('/thank-you', { replaceState: true });
+        }
+      }
+    });
+
+    // Check isLoaded status
+    const unsubscribeLoaded = userStore.isLoaded.subscribe(loaded => {
+      if (loaded) {
+        setTimeout(() => {
+           if (!userData) {
+             goto('/', { replaceState: true });
+           } else {
+             isLoading = false;
+           }
+        }, 100);
+      }
+    });
+
+    // Safety timeout
+    const safetyTimeout = setTimeout(() => {
+      if (isLoading && !userData) {
+        goto('/', { replaceState: true });
+      }
+    }, 2000);
+
+    return () => {
+      unsubscribe();
+      unsubscribeLoaded();
+      clearTimeout(safetyTimeout);
+    };
   });
 
   async function changeToAttending() {

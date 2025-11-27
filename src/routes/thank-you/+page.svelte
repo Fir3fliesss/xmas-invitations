@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import Button from '$lib/components/Button.svelte';
   import Countdown from '$lib/components/Countdown.svelte';
   import LocationCard from '$lib/components/LocationCard.svelte';
@@ -12,22 +12,59 @@
   import { browser } from '$app/environment';
 
   let copied = $state(false);
-  // Get user data immediately on initialization
-  let userData = $state<StoredRSVPData | null>(userStore.getData());
+  let userData = $state<StoredRSVPData | null>(null);
+  let isLoading = $state(true);
 
   onMount(() => {
-    console.log('Thank-you page - user data:', userData);
+    console.log('Thank-you page mounted');
+    
+    // Manual subscription to ensure we get the latest data
+    const unsubscribe = userStore.subscribe(value => {
+      userData = value;
+      console.log('Thank-you: Store updated', value);
+      
+      // If we have data, we are done loading
+      if (value) {
+        isLoading = false;
+        
+        // Verify attendance status
+        if (!value.isAttending) {
+          console.log('User not attending, redirecting...');
+          goto('/not-attending', { replaceState: true });
+        }
+      }
+    });
 
-    // Redirect if no RSVP data or not attending
-    if (!userData) {
-      console.log('No user data, redirecting to /rsvp');
-      goto('/rsvp');
-      return;
-    }
-    if (!userData.isAttending) {
-      console.log('User not attending, redirecting to /not-attending');
-      goto('/not-attending');
-    }
+    // Check isLoaded status from store
+    const unsubscribeLoaded = userStore.isLoaded.subscribe(loaded => {
+      console.log('Thank-you: Store isLoaded', loaded);
+      if (loaded) {
+        // If store is loaded but no data, redirect
+        // Give a small grace period for the data subscription to fire first
+        setTimeout(() => {
+           if (!userData) {
+             console.log('Thank-you: Store loaded but no data, redirecting home');
+             goto('/', { replaceState: true });
+           } else {
+             isLoading = false;
+           }
+        }, 100);
+      }
+    });
+
+    // Safety timeout: If nothing happens in 2 seconds, redirect home
+    const safetyTimeout = setTimeout(() => {
+      if (isLoading && !userData) {
+        console.warn('Thank-you: Safety timeout reached, redirecting home');
+        goto('/', { replaceState: true });
+      }
+    }, 2000);
+
+    return () => {
+      unsubscribe();
+      unsubscribeLoaded();
+      clearTimeout(safetyTimeout);
+    };
   });
 
   function shareWhatsApp() {

@@ -11,47 +11,40 @@
   import { Calendar, Gift, Music, Flame, Gamepad2, CheckCircle, XCircle } from 'lucide-svelte';
   import type { StoredRSVPData } from '$lib/constants';
 
-  let userData = $state<StoredRSVPData | null>(null);
-  let isLoaded = $state(false);
+  let userData = $derived($userStore);
 
-  // Simple check to render immediately
-  $effect(() => {
-    // Subscribe to isLoaded store
-    const unsubscribeLoaded = userStore.isLoaded.subscribe(value => {
-      isLoaded = value;
-      console.log('isLoaded changed:', value);
-
-      // Auto redirect if user already submitted RSVP
-      if (value && userData) {
-        console.log('User already submitted, redirecting...');
-        if (userData.isAttending) {
-          goto('/thank-you');
-        } else {
-          goto('/not-attending');
+  onMount(() => {
+    console.log('Home page mounted');
+    
+    // Check redirect after store is loaded
+    const unsubscribe = userStore.isLoaded.subscribe(loaded => {
+      if (loaded) {
+        const data = userStore.getData();
+        if (data) {
+          console.log('User already submitted, redirecting...');
+          if (data.isAttending) {
+            goto('/thank-you', { replaceState: true });
+          } else {
+            goto('/not-attending', { replaceState: true });
+          }
         }
       }
     });
 
-    // Subscribe to data store
-    const unsubscribe = userStore.subscribe(value => {
-      userData = value;
-      console.log('userData changed:', value);
-    });
-
-    return () => {
-      unsubscribe();
-      unsubscribeLoaded();
-    };
+    return unsubscribe;
   });
 
-  // Check if user already submitted RSVP
+  // Check if user already submitted RSVP (for button click)
   function goToRSVP() {
-    if (userData) {
+    // Use current value from store
+    const currentData = userStore.getData();
+    
+    if (currentData) {
       // Redirect based on attendance status
-      if (userData.isAttending) {
-        goto('/thank-you');
+      if (currentData.isAttending) {
+        goto('/thank-you', { replaceState: true });
       } else {
-        goto('/not-attending');
+        goto('/not-attending', { replaceState: true });
       }
     } else {
       goto('/rsvp');
