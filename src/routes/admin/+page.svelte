@@ -81,12 +81,16 @@
     if (browser) {
       const token = localStorage.getItem(STORAGE_KEYS.ADMIN_TOKEN);
       if (!token) {
+        console.warn('Admin: No token found, redirecting to login');
         goto('/admin/login');
         return;
       }
     }
 
-    await fetchData();
+    // Force small delay to ensure client hydration
+    setTimeout(() => {
+       fetchData();
+    }, 100);
   });
 
   async function fetchData() {
