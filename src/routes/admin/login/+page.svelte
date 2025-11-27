@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { browser } from '$app/environment';
+  import { supabase } from '$lib/supabase';
   import Button from '$lib/components/Button.svelte';
   import { STORAGE_KEYS } from '$lib/constants';
   import { TreePine, Lock, User } from 'lucide-svelte';
@@ -9,11 +10,6 @@
   let password = $state('');
   let error = $state('');
   let isLoading = $state(false);
-
-  // Simple hardcoded credentials (in production, use proper auth)
-  // TODO: Replace with your actual admin credentials
-  const ADMIN_USERNAME = 'admin';
-  const ADMIN_PASSWORD = 'natal2025';
 
   async function handleLogin(e: Event) {
     e.preventDefault();
@@ -26,10 +22,36 @@
     isLoading = true;
     error = '';
 
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+      // Query admin user from database
+      const { data: adminUser, error: fetchError } = await supabase
+        .from('admin_users')
+        .select('*')
+        .eq('username', username)
+        .single();
 
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+      console.log('Login attempt:', { username, foundUser: !!adminUser, fetchError });
+
+      if (fetchError) {
+        console.error('Login fetch error:', fetchError);
+        error = 'Terjadi kesalahan saat login';
+        isLoading = false;
+        return;
+      }
+
+      if (!adminUser) {
+        error = 'Username atau password salah';
+        isLoading = false;
+        return;
+      }
+
+      // Simple password comparison (in production, use bcrypt/scrypt)
+      if (password !== adminUser.password_hash) {
+        error = 'Username atau password salah';
+        isLoading = false;
+        return;
+      }
+
       // Create simple token (in production, use proper JWT)
       const token = btoa(`${username}:${Date.now()}`);
       
@@ -37,8 +59,9 @@
         localStorage.setItem(STORAGE_KEYS.ADMIN_TOKEN, token);
         goto('/admin');
       }
-    } else {
-      error = 'Username atau password salah';
+    } catch (err) {
+      console.error('Login error:', err);
+      error = 'Terjadi kesalahan saat login';
     }
 
     isLoading = false;
