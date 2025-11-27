@@ -102,7 +102,6 @@
 
     try {
       console.log('Admin: Starting fetch data...');
-      console.log('Admin: Supabase URL:', import.meta.env.PUBLIC_SUPABASE_URL);
       
       const { data, error: fetchError, count } = await supabase
         .from('attendees')
