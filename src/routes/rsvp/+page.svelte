@@ -4,6 +4,7 @@
   import { goto } from '$app/navigation';
   import { browser } from '$app/environment';
   import { enhance } from '$app/forms';
+  import { onMount } from 'svelte';
   import Button from '$lib/components/Button.svelte';
   import Toast from '$lib/components/Toast.svelte';
   import ChristmasLights from '$lib/components/ChristmasLights.svelte';
