@@ -8,7 +8,7 @@
   import { EVENT_INFO } from '$lib/constants';
   import { userStore } from '$lib/stores/user';
   import { formatDate } from '$lib/utils/countdown';
-  import { Calendar, Gift, Music, Flame, Gamepad2, CheckCircle, XCircle } from 'lucide-svelte';
+  import { Calendar, Gift, Music, Flame, Gamepad2, CheckCircle, XCircle, Bell, Star, Snowflake, TreePine, Sparkles } from 'lucide-svelte';
   import type { StoredRSVPData } from '$lib/constants';
 
   let userData = $derived($userStore);
@@ -59,7 +59,21 @@
 
 <div class="min-h-screen">
   <!-- Hero Section -->
-  <section class="relative py-8 px-4">
+  <section class="relative py-8 px-4 overflow-hidden">
+    <!-- Background Decorations -->
+    <div class="absolute top-10 left-6 opacity-20 animate-pulse pointer-events-none">
+      <Bell class="w-12 h-12 text-gold" />
+    </div>
+    <div class="absolute top-10 right-6 opacity-20 animate-pulse pointer-events-none" style="animation-delay: 1s;">
+      <Bell class="w-12 h-12 text-gold" />
+    </div>
+    <div class="absolute top-40 left-10 opacity-10 pointer-events-none hidden md:block">
+      <Star class="w-8 h-8 text-white" />
+    </div>
+    <div class="absolute top-40 right-10 opacity-10 pointer-events-none hidden md:block">
+      <Star class="w-8 h-8 text-white" />
+    </div>
+
     <!-- Christmas Lights -->
     <div class="max-w-md mx-auto mb-8">
       <ChristmasLights count={7} />
@@ -77,13 +91,13 @@
         "{EVENT_INFO.subtitle}"
       </p>
       
-      <!-- Decorative stars -->
-      <div class="flex justify-center gap-2 my-4 text-gold">
-        <span>✦</span>
-        <span>❄</span>
-        <span>✦</span>
-        <span>❄</span>
-        <span>✦</span>
+      <!-- Decorative icons -->
+      <div class="flex justify-center items-center gap-4 my-6 text-gold">
+        <Sparkles class="w-5 h-5 animate-pulse text-white/70" />
+        <Snowflake class="w-6 h-6 animate-spin text-white/50" style="animation-duration: 10s;" />
+        <Bell class="w-8 h-8 text-gold animate-bounce" style="animation-duration: 3s;" />
+        <Snowflake class="w-6 h-6 animate-spin text-white/50" style="animation-duration: 8s;" />
+        <Sparkles class="w-5 h-5 animate-pulse text-white/70" />
       </div>
     </div>
 
@@ -98,7 +112,15 @@
     </div>
 
     <!-- Countdown -->
-    <div class="max-w-lg mx-auto my-10">
+    <div class="max-w-lg mx-auto my-10 relative">
+      <!-- Side trees -->
+      <div class="absolute -left-8 top-1/2 -translate-y-1/2 hidden md:block opacity-30">
+         <TreePine class="w-12 h-12 text-green-500" />
+      </div>
+      <div class="absolute -right-8 top-1/2 -translate-y-1/2 hidden md:block opacity-30">
+         <TreePine class="w-12 h-12 text-green-500" />
+      </div>
+      
       <Countdown targetDate={EVENT_INFO.date} label="Menuju Hari H" />
     </div>
 
