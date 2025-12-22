@@ -2,9 +2,15 @@
   import '../app.css';
   import Snowfall from '$lib/components/Snowfall.svelte';
   import MusicPlayer from '$lib/components/MusicPlayer.svelte';
+  import NotificationRequest from '$lib/components/NotificationRequest.svelte';
   import { userStore } from '$lib/stores/user';
+  import { EVENT_INFO } from '$lib/constants';
+  import { calculateCountdown } from '$lib/utils/countdown';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
+
+
+
 
   let { children } = $props();
 
@@ -16,14 +22,42 @@
     } catch (e) {
       console.error('Error loading store:', e);
     }
+
+    // Check for notifications
+    checkAndShowNotification();
   });
+
+  function checkAndShowNotification() {
+    if (!('Notification' in window)) return;
+    if (Notification.permission !== 'granted') return;
+
+    const eventDate = new Date(EVENT_INFO.date);
+    const { days } = calculateCountdown(eventDate);
+
+    // Check if we should notify (H-14, H-7, H-5, H-3)
+    const targetDays = [14, 7, 5, 3];
+
+    if (targetDays.includes(days)) {
+      const today = new Date();
+      const lastNotif = localStorage.getItem('last_notification_date');
+      const todayStr = today.toDateString();
+
+      if (lastNotif !== todayStr) {
+        new Notification(`H-${days} Menuju Natal! 🎄`, {
+          body: `Jangan lupa, acara ${EVENT_INFO.title} tinggal ${days} hari lagi!`,
+          icon: '/icon1.svg'
+        });
+        localStorage.setItem('last_notification_date', todayStr);
+      }
+    }
+  }
 </script>
 
 <svelte:head>
   <title>Celebrate Christmas - Rohkris SMK Plus Pelita Nusantara</title>
   <meta name="description" content="Light Up Christmas With Christ - GBI Jl. Tapos Cibinong. Bergabunglah dalam sukacita Natal bersama Rohkris SMK Plus Pelita Nusantara!" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  
+
   <!-- Open Graph / Facebook / WhatsApp -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content={$page.url.href} />
@@ -73,4 +107,7 @@
 
   <!-- Background Music -->
   <MusicPlayer />
+
+  <!-- Notification Request -->
+  <NotificationRequest />
 </div>
