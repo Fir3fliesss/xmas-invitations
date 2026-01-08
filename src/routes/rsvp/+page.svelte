@@ -42,7 +42,7 @@
   let classOther = $state('');
   let isAttending = $state<boolean | null>(null);
   let reason = $state('');
-  
+
   // UI state
   let isSubmitting = $state(false);
   let errorMessage = $state('');
@@ -101,9 +101,9 @@
 
   async function handleSubmit(e: Event) {
     e.preventDefault();
-    
+
     if (!isFormValid || isSubmitting) return;
-    
+
     isSubmitting = true;
     errorMessage = '';
 
