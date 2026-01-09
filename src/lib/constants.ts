@@ -16,9 +16,9 @@ export const EVENT_INFO = {
   location: {
     name: 'GBI Jl. Tapos Cibinong',
     address: 'Jl. Tapos, Cibinong, Bogor, Jawa Barat',
-    mapsUrl: 'https://maps.app.goo.gl/vv6r27VM2pWK6zQi6',
+    mapsUrl: 'https://maps.app.goo.gl/sPMmHdNiY1AwvaU59',
     // TODO: Update with actual embed URL if needed
-    mapsEmbed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.0!2d106.8!3d-6.5!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMzAnMDAuMCJTIDEwNsKwNDgnMDAuMCJF!5e0!3m2!1sen!2sid!4v1234567890'
+    mapsEmbed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3964.4837802844672!2d106.85693527499231!3d-6.460225193531314!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69eb93ff85dffd%3A0x2ad9e0d7c6bab429!2sGBI%20Jalan%20Tapos%20Cibinong!5e0!3m2!1sid!2sid!4v1767938541910!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade'
   },
 
   // Activities
@@ -42,8 +42,8 @@ export const EVENT_INFO = {
   // Contact
   contact: {
     name: 'Panitia',
-    phone: '+62 859-6727-9063',
-    whatsapp: 'https://wa.me/6285967279063'
+    phone: '+62 878-5320-6899',
+    whatsapp: 'https://wa.me/6287853206899'
   }
 } as const;
 
