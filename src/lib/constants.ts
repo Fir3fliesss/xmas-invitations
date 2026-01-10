@@ -57,14 +57,14 @@ export const SCHOOLS = [
     label: 'SMK Plus Pelita Nusantara (Penus)',
     shortLabel: 'Penus'
   },
-  {
-    value: 'pesat',
-    label: 'SMA Plus PGRI Cibinong (Pesat)',
-    shortLabel: 'Pesat'
-  },
+  // {
+  //   value: 'pesat',
+  //   label: 'SMA Plus PGRI Cibinong (Pesat)',
+  //   shortLabel: 'Pesat'
+  // },
   {
     value: 'other',
-    label: 'Lainnya',
+    label: 'Lainnya (Masukan nama sekolah anda)',
     shortLabel: 'Lainnya'
   }
 ] as const;
